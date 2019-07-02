@@ -7,16 +7,32 @@ import 'package:bmi_calculator/input_page/input_page_styles.dart';
 import 'package:bmi_calculator/app_bar.dart';
 import 'package:bmi_calculator/models/gender.dart';
 import 'package:bmi_calculator/input_page/input_summary_card.dart';
+import 'package:bmi_calculator/input_page/pacman_slider.dart';
 
 class InputPage extends StatefulWidget {
   @override
   _InputPageState createState() => _InputPageState();
 }
 
-class _InputPageState extends State<InputPage> {
+class _InputPageState extends State<InputPage> with TickerProviderStateMixin {
+  AnimationController _submitAnimationController;
+
   Gender gender = Gender.other;
   int height = 170;
   int weight = 70;
+
+  @override
+  void initState() {
+    super.initState();
+    _submitAnimationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 2));
+  }
+
+  @override
+  void dispose() {
+    _submitAnimationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,15 +53,22 @@ class _InputPageState extends State<InputPage> {
   }
 
   Widget _buildBottom(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      height: screenAwareSize(108.0, context),
-      width: double.infinity,
-      child: Switch(
-        value: true,
-        onChanged: (val) {},
+    return Padding(
+      padding: EdgeInsets.only(
+        left: screenAwareSize(16, context),
+        right: screenAwareSize(16, context),
+        bottom: screenAwareSize(22, context),
+        top: screenAwareSize(14, context),
+      ),
+      child: PacmanSlider(
+        onSubmit: onPacmanSubmit,
+        submitAnimationController: _submitAnimationController,
       ),
     );
+  }
+
+  onPacmanSubmit() {
+    _submitAnimationController.forward();
   }
 
   Widget _buildCards(BuildContext context) {

@@ -21,6 +21,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'BMI Calculator',
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: Color.fromRGBO(77, 123, 243, 1.0),
+        fontFamily: 'SF Pro Display',
+      ),
       home: InputPage(),
     );
   }
