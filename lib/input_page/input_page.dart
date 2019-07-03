@@ -8,6 +8,9 @@ import 'package:bmi_calculator/app_bar.dart';
 import 'package:bmi_calculator/models/gender.dart';
 import 'package:bmi_calculator/input_page/input_summary_card.dart';
 import 'package:bmi_calculator/input_page/pacman_slider.dart';
+import 'package:bmi_calculator/input_page/transition_dot.dart';
+import 'package:bmi_calculator/fade_route.dart';
+import 'package:bmi_calculator/result_page.dart';
 
 class InputPage extends StatefulWidget {
   @override
@@ -25,7 +28,16 @@ class _InputPageState extends State<InputPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _submitAnimationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 2));
+        AnimationController(vsync: this, duration: Duration(seconds: 2))
+          ..addStatusListener(
+            (status) {
+              if (status == AnimationStatus.completed) {
+                _goToResultPage().then((_) {
+                  _submitAnimationController.reset();
+                });
+              }
+            },
+          );
   }
 
   @override
@@ -36,19 +48,24 @@ class _InputPageState extends State<InputPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        child: BmiAppBar(),
-        preferredSize: Size.fromHeight(appBarHeight(context)),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          InputSummaryCard(gender: gender, height: height, weight: weight),
-          Expanded(child: _buildCards(context)),
-          _buildBottom(context)
-        ],
-      ),
+    return Stack(
+      children: <Widget>[
+        Scaffold(
+          appBar: PreferredSize(
+            child: BmiAppBar(),
+            preferredSize: Size.fromHeight(appBarHeight(context)),
+          ),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              InputSummaryCard(gender: gender, height: height, weight: weight),
+              Expanded(child: _buildCards(context)),
+              _buildBottom(context)
+            ],
+          ),
+        ),
+        TransitionDot(animation: _submitAnimationController),
+      ],
     );
   }
 
@@ -99,5 +116,14 @@ class _InputPageState extends State<InputPage> with TickerProviderStateMixin {
         ),
       ],
     );
+  }
+
+  _goToResultPage() async {
+    return Navigator.of(context).push(FadeRoute(
+        builder: (context) => ResultPage(
+              weight: weight,
+              height: height,
+              gender: gender,
+            )));
   }
 }

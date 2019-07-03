@@ -249,7 +249,9 @@ class _AnimatedDotsState extends State<AnimatedDots>
     hintAnimationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         Future.delayed(Duration(milliseconds: 800), () {
-          hintAnimationController.forward(from: 0.0);
+          try {
+            hintAnimationController.forward(from: 0.0);
+          } catch (e) {}
         });
       }
     });

@@ -4,8 +4,11 @@ import 'package:bmi_calculator/widget_utils.dart';
 import 'package:bmi_calculator/input_page/input_page_styles.dart';
 
 class BmiAppBar extends StatelessWidget {
+  final bool isInputPage;
   static const String wavingHandEmoji = "\uD83D\uDC4B";
   static const String whiteSkinTone = "\uD83C\uDFFB";
+
+  BmiAppBar({Key key, this.isInputPage = true}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +35,10 @@ class BmiAppBar extends StatelessWidget {
   Padding _buildIcon(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(bottom: screenAwareSize(11.0, context)),
-      child: Container(
+      child: SvgPicture.asset(
+        'images/user.svg',
         width: screenAwareSize(20.0, context),
         height: screenAwareSize(20.0, context),
-        child: Placeholder(color: Theme.of(context).primaryColor),
       ),
     );
   }
@@ -46,8 +49,9 @@ class BmiAppBar extends StatelessWidget {
         style: DefaultTextStyle.of(context).style.copyWith(fontSize: 34.0),
         children: [
           TextSpan(
-              text: "Hi Johny", style: TextStyle(fontWeight: FontWeight.bold)),
-          TextSpan(text: getEmoji(context)),
+              text: isInputPage ? "Hi Johny" : "Your BMI",
+              style: TextStyle(fontWeight: FontWeight.bold)),
+          TextSpan(text: isInputPage ? getEmoji(context) : ''),
         ],
       ),
     );
